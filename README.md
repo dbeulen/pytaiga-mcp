@@ -156,7 +156,49 @@ Paste the following json in your Claude App's or Cursor's mcp settings section.
 }
 ```
 
-### Running the Bridge
+### Using Docker (Highly Recommended)
+
+The easiest way to run the Taiga MCP Bridge is using Docker and Docker Compose. This ensures a consistent environment and simplifies dependency management.
+
+#### 1. Configure Environment
+
+Create or update your `.env` file in the project root:
+
+```env
+TAIGA_API_URL=https://api.taiga.io/api/v1/
+TAIGA_USERNAME=your_username
+TAIGA_PASSWORD=your_password
+TAIGA_TRANSPORT=sse
+LOG_LEVEL=INFO
+```
+
+#### 2. Run with Docker Compose
+
+```bash
+# Build and start the container
+docker compose up -d
+
+# View logs
+docker compose logs -f
+```
+
+The server will be accessible at `http://localhost:8000` using the SSE transport.
+
+#### 3. Integration Settings
+
+For tools like Claude or Cursor, use the following server configuration for SSE:
+
+```json
+{
+  "mcpServers": {
+    "taiga": {
+      "url": "http://localhost:8000/sse"
+    }
+  }
+}
+```
+
+### Running the Bridge (Local)
 
 Start the MCP server with:
 
