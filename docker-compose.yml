@@ -1,22 +1,23 @@
 services:
   taiga-mcp:
-    build: .
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     container_name: taiga-mcp
+    working_dir: /app
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
     environment:
-      # Taiga API base URL
       - TAIGA_API_URL=${TAIGA_API_URL:-http://localhost:9000}
-      
-      # Credentials for auto-authentication on server startup
       - TAIGA_USERNAME=${TAIGA_USERNAME:-your_username}
       - TAIGA_PASSWORD=${TAIGA_PASSWORD:-your_password}
-      
-      # Transport mode (stdio or sse)
-      # SSE is recommended for persistent container access
       - TAIGA_TRANSPORT=${TAIGA_TRANSPORT:-sse}
-      
-      # Logging level (DEBUG, INFO, WARNING, ERROR)
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      
+      - UV_COMPILE_BYTECODE=1
+    # On start: install git, install dependencies via uv, then run server
+    command: >
+      sh -c "apt-get update && apt-get install -y --no-install-recommends git &&
+             rm -rf /var/lib/apt/lists/* &&
+             uv sync --frozen --no-dev &&
+             uv run python src/server.py --sse --port 8000"
     restart: unless-stopped

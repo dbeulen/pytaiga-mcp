@@ -175,7 +175,7 @@ LOG_LEVEL=INFO
 #### 2. Run with Docker Compose
 
 ```bash
-# Build and start the container
+# Start the container
 docker compose up -d
 
 # View logs
